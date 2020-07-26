@@ -1,6 +1,7 @@
 let globalCountries = [];
 let globalPeople = [];
 let globalUserCountry = [];
+let globalFilter = [];
 
 async function start(){
     //Chamada Normal das funções
@@ -20,6 +21,7 @@ async function start(){
 
     hideSpinner();
     mergeUsersAndCountries();
+    configFilter();
     render();
 }
 
@@ -93,6 +95,25 @@ function mergeUsersAndCountries(){
         //Realizando Spread para unir os dois arrays.
         globalUserCountry.push({...user, ...country});     
     });
+    //Assim que o array é montado, faz uma copia para o array de filtros.
+    globalUserCountry.sort((a,b) => a.userName.localeCompare(b.userName));
+    globalFilter = [...globalUserCountry];
+}
+
+function configFilter(){
+    const buttonFilter = document.getElementById('buttonFilter');
+    const inputFilter = document.getElementById('inputFilter');
+
+    function handleSearchItems(){
+        const filterValue = inputFilter.value.toLowerCase().trim(); //TRIM: Remove espaçamentos.
+        globalFilter = globalUserCountry.filter(item => {
+            return item.userName.toLowerCase().includes(filterValue);
+        });
+        render();
+    }
+
+    buttonFilter.addEventListener('click', handleSearchItems);
+    inputFilter.addEventListener('keyup', handleSearchItems);
 }
 
 function render(){
@@ -101,7 +122,7 @@ function render(){
     divUsers.innerHTML = 
     `
         <div class='row'>
-            ${globalUserCountry.map(({userName, userPicture, countryName, countryFlag}) => {
+            ${globalFilter.map(({userName, userPicture, countryName, countryFlag}) => {
                 return `
                     <div class='col s12 m4 l3 '>
                         <div class='flex-row bordered'>
@@ -120,7 +141,6 @@ function render(){
 }
 
 start();
-
 
 //Links da API:
 //'https://randomuser.me/api/?results=100&seed=promise';

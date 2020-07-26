@@ -40,6 +40,6 @@
     justify-content: center;
 }
 
-.flex-center span{
+.flex-center span, .center button{
     margin-left: 20px;
 }
